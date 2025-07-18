@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { PostgrestError } from "@supabase/supabase-js";
 import { updatePortfolioItem } from "@/app/dashboard/portfolio/actions";
 
+// Tipe data portfolio item
 interface PortfolioItem {
   id: string;
   title: string;
@@ -20,22 +21,15 @@ interface PortfolioItem {
   is_published: boolean;
 }
 
-interface EditPortfolioPageProps {
-  params: {
-    id: string;
-  };
-  // INI ADALAH PERBAIKANNYA: Tambahkan searchParams sebagai opsional
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-export default async function EditPortfolioPage({ params }: EditPortfolioPageProps) {
+export default async function EditPortfolioPage({ params }: { params: { id: string } }) {
   const supabase = createServerComponentClient(cookies());
 
-  // Authentication and admin verification
+  // Auth & admin check
   const {
     data: { session },
     error: sessionError,
   } = await supabase.auth.getSession();
+
   if (!session || sessionError) {
     console.error("EditPortfolioPage: No active session found or error:", sessionError);
     redirect("/login");
@@ -48,8 +42,11 @@ export default async function EditPortfolioPage({ params }: EditPortfolioPagePro
     redirect("/");
   }
 
-  // Fetch portfolio item data
-  const { data: portfolioItem, error: fetchError } = (await supabase.from("portfolio").select("*").eq("id", params.id).single()) as { data: PortfolioItem | null; error: PostgrestError | null };
+  // Fetch portfolio item by ID
+  const { data: portfolioItem, error: fetchError } = (await supabase.from("portfolio").select("*").eq("id", params.id).single()) as {
+    data: PortfolioItem | null;
+    error: PostgrestError | null;
+  };
 
   if (fetchError || !portfolioItem) {
     console.error("Error fetching portfolio item for edit:", fetchError);
