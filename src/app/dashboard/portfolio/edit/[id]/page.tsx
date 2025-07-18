@@ -21,7 +21,10 @@ interface PortfolioItem {
   is_published: boolean;
 }
 
-export default async function EditPortfolioPage({ params }: { params: { id: string } }) {
+export default async function EditPortfolioPage({ params }: { params: Promise<{ id: string }> }) {
+  // Await params untuk Next.js 15
+  const { id } = await params;
+
   const supabase = createServerComponentClient(cookies());
 
   // Auth & admin check
@@ -42,8 +45,8 @@ export default async function EditPortfolioPage({ params }: { params: { id: stri
     redirect("/");
   }
 
-  // Fetch portfolio item by ID
-  const { data: portfolioItem, error: fetchError } = (await supabase.from("portfolio").select("*").eq("id", params.id).single()) as {
+  // Fetch portfolio item by ID - gunakan id yang sudah di-await
+  const { data: portfolioItem, error: fetchError } = (await supabase.from("portfolio").select("*").eq("id", id).single()) as {
     data: PortfolioItem | null;
     error: PostgrestError | null;
   };
