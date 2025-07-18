@@ -5,20 +5,29 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Download, ExternalLink, Gem, ArrowLeft, ChevronDown } from "lucide-react";
+// Import PriceTag jika digunakan, atau ikon lain yang mewakili pembelian.
+// Jika PriceTag tidak digunakan secara langsung, bisa dihapus dari import.
+// Misalnya, jika kamu ingin menampilkan icon keranjang belanja, bisa import ShoppingCart
 
+// PENTING: Interface ini HARUS SAMA PERSIS dengan `TemplateItem` di `src/app/templates/[slug]/page.tsx`
+// Pastikan semua properti yang bisa NULL dari database ditandai dengan `| null`.
 interface TemplateItemProps {
+  id: string; // Tambahkan `id` di sini agar konsisten dengan `page.tsx` jika itu yang dikirim
   name: string;
   description: string;
   image_url: string;
   type: "free" | "premium";
-  download_url?: string;
-  gumroad_url?: string;
-  lynkid_url?: string;
-  payhip_url?: string;
-  live_demo_url?: string;
-  price?: number;
+  download_url: string | null; // <-- Diperbaiki: string atau null
+  gumroad_url: string | null; // <-- Diperbaiki: string atau null
+  lynkid_url: string | null; // <-- Diperbaiki: string atau null
+  payhip_url: string | null; // <-- Diperbaiki: string atau null
+  live_demo_url: string | null; // <-- Diperbaiki: string atau null
+  price: number | null; // <-- Diperbaiki: number atau null
   features: string[] | null;
   slug: string;
+  // Jika `created_at` dan `updated_at` dikirim dari `page.tsx`, tambahkan di sini juga:
+  created_at?: string;
+  updated_at?: string | null;
 }
 
 const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) => {
@@ -43,11 +52,12 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
   const getPurchaseOptions = () => {
     const options = [];
 
+    // Pastikan item.gumroad_url tidak null atau string kosong
     if (item.gumroad_url) {
       options.push({
         name: "Gumroad",
         url: item.gumroad_url,
-        icon: "🛒",
+        icon: "🛒", // Gunakan ikon yang konsisten jika ada
         description: "Buy on Gumroad",
       });
     }
@@ -116,14 +126,15 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
         )}
 
         {/* Price Display (for premium templates) */}
-        {item.type === "premium" && item.price && (
-          <div className="text-center mb-12">
-            <div className="inline-block bg-white dark:bg-gray-800 px-8 py-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">${item.price.toLocaleString()}</span>
-              <span className="block text-sm text-gray-500 dark:text-gray-400 mt-1">One-time payment</span>
+        {item.type === "premium" &&
+          item.price !== null && ( // <-- Diperbaiki: Cek `!== null`
+            <div className="text-center mb-12">
+              <div className="inline-block bg-white dark:bg-gray-800 px-8 py-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">${item.price.toLocaleString()}</span>
+                <span className="block text-sm text-gray-500 dark:text-gray-400 mt-1">One-time payment</span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-6 mb-20">

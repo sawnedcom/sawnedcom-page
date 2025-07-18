@@ -7,13 +7,16 @@ import { Metadata } from "next";
 import BlogDetailClient from "@/components/tutorials/BlogDetailClient";
 
 // Blog post type definition
+// PENTING: Properti yang bisa NULL dari database harus ditandai dengan `| null`
 interface BlogPostItem {
   id: string;
   title: string;
   content: string;
   excerpt: string;
-  image_url?: string;
+  image_url: string | null; // <-- Diperbaiki: Bisa string atau null
   created_at: string;
+  // Jika ada updated_at di database, tambahkan di sini juga
+  updated_at?: string | null;
   author: string;
   tags: string[];
   is_published: boolean;
@@ -33,10 +36,23 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
   }
 
+  // Pastikan `process.env.NEXT_PUBLIC_SITE_URL` sudah terdefinisi di Vercel
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sawnedcom.vercel.app"; // Fallback URL
+
   return {
     title: `${item.title} - Sawnedcom Blog`,
     description: item.excerpt,
     openGraph: {
+      title: `${item.title} - Sawnedcom Blog`, // Lebih eksplisit
+      description: item.excerpt,
+      images: item.image_url ? [item.image_url] : [],
+      url: `${siteUrl}/tutorials/${slug}`, // Tambahkan URL lengkap
+      type: "article", // Tipe yang lebih tepat untuk blog post
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${item.title} - Sawnedcom Blog`,
+      description: item.excerpt,
       images: item.image_url ? [item.image_url] : [],
     },
   };
@@ -46,6 +62,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function TutorialDetailPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
 
+  // Ambil semua kolom yang didefinisikan di BlogPostItem
   const { data: item, error } = await supabase.from("blog_posts").select("*").eq("slug", slug).eq("is_published", true).single();
 
   if (error || !item) {
@@ -53,5 +70,6 @@ export default async function TutorialDetailPage({ params }: { params: { slug: s
     notFound();
   }
 
+  // PENTING: Lakukan type assertion ke BlogPostItem
   return <BlogDetailClient item={item as BlogPostItem} />;
 }

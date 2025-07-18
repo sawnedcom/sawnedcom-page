@@ -6,11 +6,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
 
+// PENTING: Interface ini HARUS SAMA PERSIS dengan `BlogPostItem` di `src/app/tutorials/[slug]/page.tsx`
+// Pastikan `image_url` ditandai dengan `| null`.
 interface BlogPostItemProps {
+  id: string; // Tambahkan `id` agar konsisten dengan `page.tsx`
   title: string;
   content: string;
-  image_url?: string;
+  excerpt: string; // `excerpt` juga ada di page.tsx, pastikan di sini juga
+  image_url: string | null; // <-- Diperbaiki: Bisa string atau null
   created_at: string;
+  updated_at?: string | null; // Tambahkan ini jika ada di database/page.tsx
   author: string;
   tags: string[];
   slug: string;
@@ -23,6 +28,9 @@ const BlogDetailClient: React.FC<{ item: BlogPostItemProps }> = ({ item }) => {
       month: "long",
       day: "numeric",
     };
+    // Perhatikan: new Date(null) akan menghasilkan Invalid Date.
+    // Pastikan dateString selalu valid string sebelum diteruskan.
+    // Dalam konteks ini, `created_at` seharusnya selalu ada dan bukan null.
     return new Date(dateString).toLocaleDateString("id-ID", options);
   };
 
@@ -60,14 +68,15 @@ const BlogDetailClient: React.FC<{ item: BlogPostItemProps }> = ({ item }) => {
         </div>
 
         {/* Featured Image */}
-        {item.image_url && (
+        {item.image_url && ( // <-- `item.image_url` akan dievaluasi true jika ada string, false jika null
           <div className="relative w-full h-64 md:h-80 lg:h-96 bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden mb-12 shadow-xl border border-gray-200 dark:border-gray-700">
-            <Image src={item.image_url || "/placeholder-blog.jpg"} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw" priority />
+            <Image src={item.image_url} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw" priority />
           </div>
         )}
 
         {/* Blog Content */}
         <article className="prose prose-lg dark:prose-invert max-w-none mb-12">
+          {/* Menggunakan `item.content` secara langsung, pastikan ini adalah HTML string yang aman */}
           <div className="text-gray-700 dark:text-gray-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: item.content }} />
         </article>
 

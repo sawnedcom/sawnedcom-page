@@ -6,19 +6,22 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import PortfolioDetailClient from "@/components/portfolio/PortfolioDetailClient";
 
+// Pastikan interface ini sesuai dengan skema database 'portfolio'
+// PENTING: Properti yang bisa NULL dari database harus ditandai dengan `| null`
 interface PortfolioItem {
   id: string;
   title: string;
   description: string;
   image_url: string;
-  live_url?: string;
-  github_url?: string;
+  live_url: string | null; // Diperbaiki: Bisa string atau null
+  github_url: string | null; // Diperbaiki: Bisa string atau null
   technologies: string[];
   slug: string;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null; // Diperbaiki: Bisa string atau null jika di database
 }
 
+// generateMetadata: Menerima params sebagai objek langsung
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { data: item } = await supabase.from("portfolio").select("title, description, image_url, technologies").eq("slug", params.slug).single();
 
@@ -32,6 +35,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       },
     };
   }
+
+  // Pastikan `process.env.NEXT_PUBLIC_SITE_URL` sudah terdefinisi di Vercel
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sawnedcom.vercel.app"; // Fallback URL
 
   return {
     title: `${item.title} | Sawnedcom Portfolio`,
@@ -50,7 +56,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             },
           ]
         : [],
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/portfolio/${params.slug}`,
+      url: `${siteUrl}/portfolio/${params.slug}`, // Gunakan siteUrl
       type: "website",
     },
     twitter: {
@@ -62,6 +68,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
+// PortfolioDetailPage: Menerima params sebagai objek langsung
 export default async function PortfolioDetailPage({ params }: { params: { slug: string } }) {
   const { data: item, error } = await supabase.from("portfolio").select("*").eq("slug", params.slug).single();
 
@@ -71,7 +78,13 @@ export default async function PortfolioDetailPage({ params }: { params: { slug: 
   }
 
   // Fetch related projects
-  const { data: relatedItems } = await supabase.from("portfolio").select("id, title, image_url, slug, technologies").neq("id", item.id).limit(3).order("created_at", { ascending: false });
+  const { data: relatedItems, error: relatedError } = await supabase.from("portfolio").select("id, title, image_url, slug, technologies").neq("id", item.id).limit(3).order("created_at", { ascending: false });
 
-  return <PortfolioDetailClient item={item as PortfolioItem} relatedItems={relatedItems || []} />;
+  // Handle error for related items if necessary, though it might not block the page render
+  if (relatedError) {
+    console.error("Error fetching related portfolio items:", relatedError);
+  }
+
+  // PENTING: Lakukan type assertion ke PortfolioItem[] untuk relatedItems
+  return <PortfolioDetailClient item={item as PortfolioItem} relatedItems={(relatedItems as PortfolioItem[]) || []} />;
 }

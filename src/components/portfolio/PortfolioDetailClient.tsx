@@ -6,14 +6,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { ExternalLink, Github, ArrowLeft } from "lucide-react";
 
+// PENTING: Interface ini HARUS SAMA PERSIS dengan `PortfolioItem` di `src/app/portfolio/[slug]/page.tsx`
+// Pastikan semua properti yang bisa NULL dari database ditandai dengan `| null`.
 interface PortfolioItemProps {
+  id: string; // Tambahkan `id` di sini, karena `item` di page.tsx memiliki `id`
   title: string;
   description: string;
   image_url: string;
-  live_url?: string;
-  github_url?: string;
+  live_url: string | null; // <-- UBAH INI: Pastikan bisa `null`
+  github_url: string | null; // <-- UBAH INI: Pastikan bisa `null`
   technologies: string[];
   slug: string;
+  // Jika `created_at` dan `updated_at` juga dikirim dari page.tsx, tambahkan di sini:
+  created_at?: string; // Opsional jika tidak selalu ada, tapi di page.tsx sepertinya ada
+  updated_at?: string | null; // Opsional dan bisa null
 }
 
 interface PortfolioItemCard {
@@ -22,6 +28,8 @@ interface PortfolioItemCard {
   image_url: string;
   slug: string;
   technologies: string[];
+  // relatedItems di page.tsx hanya select id, title, image_url, slug, technologies.
+  // Jadi interface ini sudah cukup sesuai, asalkan tidak ada `null` yang datang dari kolom tersebut.
 }
 
 interface PortfolioDetailClientProps {
@@ -68,13 +76,13 @@ const PortfolioDetailClient: React.FC<PortfolioDetailClientProps> = ({ item, rel
 
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-6 mb-20">
-          {item.live_url && (
+          {item.live_url && ( // Ini akan bekerja dengan baik karena null dianggap falsy
             <a href={item.live_url} target="_blank" rel="noopener noreferrer" className="flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl">
               <ExternalLink size={20} className="mr-3" />
               View Live Project
             </a>
           )}
-          {item.github_url && (
+          {item.github_url && ( // Ini juga akan bekerja dengan baik
             <a href={item.github_url} target="_blank" rel="noopener noreferrer" className="flex items-center px-8 py-4 bg-gray-800 text-white font-medium rounded-xl hover:bg-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl dark:bg-gray-700 dark:hover:bg-gray-600">
               <Github size={20} className="mr-3" />
               View on GitHub
