@@ -21,9 +21,11 @@ interface PortfolioItem {
   updated_at: string | null; // Diperbaiki: Bisa string atau null jika di database
 }
 
-// generateMetadata: Menerima params sebagai objek langsung
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { data: item } = await supabase.from("portfolio").select("title, description, image_url, technologies").eq("slug", params.slug).single();
+// generateMetadata: Menerima params sebagai Promise dan await
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+
+  const { data: item } = await supabase.from("portfolio").select("title, description, image_url, technologies").eq("slug", slug).single();
 
   if (!item) {
     return {
@@ -56,7 +58,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             },
           ]
         : [],
-      url: `${siteUrl}/portfolio/${params.slug}`, // Gunakan siteUrl
+      url: `${siteUrl}/portfolio/${slug}`, // Gunakan slug yang sudah di-await
       type: "website",
     },
     twitter: {
@@ -68,9 +70,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-// PortfolioDetailPage: Menerima params sebagai objek langsung
-export default async function PortfolioDetailPage({ params }: { params: { slug: string } }) {
-  const { data: item, error } = await supabase.from("portfolio").select("*").eq("slug", params.slug).single();
+// PortfolioDetailPage: Menerima params sebagai Promise dan await
+export default async function PortfolioDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  const { data: item, error } = await supabase.from("portfolio").select("*").eq("slug", slug).single();
 
   if (error || !item) {
     console.error("Error fetching portfolio item:", error);
