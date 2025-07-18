@@ -24,6 +24,8 @@ interface EditPortfolioPageProps {
   params: {
     id: string;
   };
+  // INI ADALAH PERBAIKANNYA: Tambahkan searchParams sebagai opsional
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default async function EditPortfolioPage({ params }: EditPortfolioPageProps) {
