@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --putih: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  @apply font-sans;
+}
+
+.ql-toolbar {
+  background-color: #ffffff !important;
+  border-color: #d1d5db !important;
+  color: #000000 !important;
+}
+
+.ql-toolbar button {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ql-toolbar {
+    background-color: #1f2937 !important;
+    border-color: #4b5563 !important;
+    color: #f9fafb !important;
+  }
+
+  .ql-toolbar button {
+    color: #f9fafb !important;
+    fill: #f9fafb !important;
+  }
+
+  .ql-toolbar button.ql-active {
+    background-color: #374151 !important;
+  }
+}
+
+.ql-toolbar {
+  background-color: var(--putih) !important;
+  color: var(--putih) !important;
+}
