@@ -8,6 +8,7 @@ import { PlusCircle, Search, Filter } from "lucide-react";
 import { PostgrestError } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import PortfolioTable from "@/components/dashboard/PortfolioTable";
+import { deletePortfolioItem } from "./actions";
 
 interface PortfolioItem {
   id: string;
@@ -20,38 +21,6 @@ interface PortfolioItem {
   technologies: string[];
   created_at: string;
   is_published: boolean;
-}
-
-
-export async function deletePortfolioItem(id: string) {
-  "use server";
-
-  const supabase = createServerComponentClient(cookies());
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-  if (!user || userError) {
-    console.error("Server Action: User not authenticated for delete.", userError);
-    return { success: false, message: "Not authenticated." };
-  }
-
-  const { data: profile, error: profileError } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
-
-  if (profileError || !profile || !profile.is_admin) {
-    console.error("Server Action: User is not admin for delete.", profileError);
-    return { success: false, message: "Access denied. You are not an admin." };
-  }
-
-  const { error: deleteError } = await supabase.from("portfolio").delete().eq("id", id);
-
-  if (deleteError) {
-    console.error("Server Action: Error deleting portfolio item:", deleteError);
-    return { success: false, message: `Failed to delete portfolio: ${deleteError.message}` };
-  }
-
-  return { success: true, message: "Portfolio item deleted successfully!" };
 }
 
 export default async function DashboardPortfolioPage() {
