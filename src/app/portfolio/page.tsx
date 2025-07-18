@@ -22,9 +22,17 @@ export const metadata: Metadata = {
   description: "Explore the latest and greatest projects from Sawnedcom.",
 };
 
-export default async function PortfolioPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+// Update the interface to match Next.js 15 requirements
+interface PageProps {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function PortfolioPage({ searchParams }: PageProps) {
   const supabase = createServerComponentClient(cookies());
-  const searchQuery = (searchParams?.q || "").toString().toLowerCase();
+
+  // Await the searchParams Promise
+  const resolvedSearchParams = await searchParams;
+  const searchQuery = (resolvedSearchParams?.q || "").toString().toLowerCase();
 
   let query = supabase.from("portfolio").select("*").order("created_at", { ascending: false });
 
