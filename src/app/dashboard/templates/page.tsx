@@ -18,11 +18,14 @@ interface TemplateItem {
   live_demo_url: string | null;
   download_url: string | null;
   gumroad_url: string | null;
+  lynkid_url: string | null; // <-- Tambahkan ini
+  payhip_url: string | null; // <-- Tambahkan ini
   tags: string[];
   price: number;
   is_free: boolean;
   is_published: boolean;
   type: string;
+  created_at: string; // <-- Tambahkan ini
 }
 
 export default async function DashboardTemplatesPage() {

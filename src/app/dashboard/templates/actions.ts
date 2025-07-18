@@ -15,11 +15,16 @@ interface TemplateItem {
   live_demo_url: string | null;
   download_url: string | null;
   gumroad_url: string | null;
+  // --- TAMBAHKAN INI ---
+  lynkid_url: string | null; // Pastikan ini ada dan tipe datanya benar
+  payhip_url: string | null; // Pastikan ini ada dan tipe datanya benar
+  // --- AKHIR TAMBAHAN ---
   tags: string[];
   price: number; // Ini akan diasumsikan dalam USD
   is_free: boolean;
   is_published: boolean;
   type: string;
+  created_at: string; // Pastikan ini ada dan tipe datanya benar
 }
 
 // Helper function to upload image to Supabase Storage

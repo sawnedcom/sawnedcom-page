@@ -17,6 +17,11 @@ interface TemplateItem {
   live_demo_url: string | null;
   download_url: string | null;
   gumroad_url: string | null;
+  // --- PASTIKAN 3 PROPERTI INI ADA DI SINI ---
+  lynkid_url: string | null; // Tambahkan ini
+  payhip_url: string | null; // Tambahkan ini
+  created_at: string; // Tambahkan ini (tipe biasanya string untuk timestamp)
+  // --- AKHIR PENAMBAHAN ---
   tags: string[];
   price: number;
   is_free: boolean;
@@ -24,9 +29,11 @@ interface TemplateItem {
   type: string;
 }
 
-export default async function EditTemplatePage({ params }: { params: { id: string } }) {
+export default async function EditTemplatePage({ params }: { params: Promise<{ id: string }> }) {
+  // Await params untuk mendapatkan nilai ID yang sebenarnya
+  const { id: templateId } = await params;
+
   const supabase = createServerComponentClient(cookies());
-  const templateId = params.id;
 
   // Authentication verification
   const {
