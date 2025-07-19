@@ -28,13 +28,21 @@ export const metadata: Metadata = {
   description: "Explore tutorials, guides, and articles about web development from Sawnedcom.",
 };
 
+// Update interface untuk Next.js 15
+interface PageProps {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
 // Main Server Component for tutorials page
-export default async function TutorialsPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+export default async function TutorialsPage({ searchParams }: PageProps) {
+  // Await the searchParams Promise
+  const resolvedSearchParams = await searchParams;
+
   // Extract search query from URL
-  const searchQuery = (searchParams?.q || "").toString().toLowerCase();
+  const searchQuery = (resolvedSearchParams?.q || "").toString().toLowerCase();
 
   // Normalize selected tags into an array
-  const selectedTags: string[] = searchParams?.tag ? (Array.isArray(searchParams.tag) ? searchParams.tag : [searchParams.tag]) : [];
+  const selectedTags: string[] = resolvedSearchParams?.tag ? (Array.isArray(resolvedSearchParams.tag) ? resolvedSearchParams.tag : [resolvedSearchParams.tag]) : [];
 
   // Fetch all tags from published blog posts
 

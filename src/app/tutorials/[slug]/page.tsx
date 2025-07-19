@@ -23,9 +23,16 @@ interface BlogPostItem {
   slug: string;
 }
 
+// Update interface untuk Next.js 15
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
 // Generates dynamic metadata for SEO
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = params;
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  // Await the params Promise
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
 
   const { data: item } = await supabase.from("blog_posts").select("title, excerpt, image_url").eq("slug", slug).single();
 
@@ -59,8 +66,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 // Renders the blog post detail page
-export default async function TutorialDetailPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function TutorialDetailPage({ params }: PageProps) {
+  // Await the params Promise
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
 
   // Ambil semua kolom yang didefinisikan di BlogPostItem
   const { data: item, error } = await supabase.from("blog_posts").select("*").eq("slug", slug).eq("is_published", true).single();

@@ -26,9 +26,16 @@ interface TemplateItem {
   updated_at?: string | null; // Jika ada di DB
 }
 
+// Update interface untuk Next.js 15
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
 // Generates dynamic metadata for SEO and sharing
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { data: item } = await supabase.from("templates").select("name, description, image_url").eq("slug", params.slug).single();
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  // Await the params Promise
+  const resolvedParams = await params;
+  const { data: item } = await supabase.from("templates").select("name, description, image_url").eq("slug", resolvedParams.slug).single();
 
   if (!item) {
     return {
@@ -46,7 +53,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       images: item.image_url ? [item.image_url] : [],
       // Tambahkan URL lengkap untuk Open Graph
-      url: `${siteUrl}/templates/${params.slug}`,
+      url: `${siteUrl}/templates/${resolvedParams.slug}`,
       type: "website",
     },
     // Tambahkan Twitter Card jika diinginkan
@@ -60,9 +67,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 // Renders the template detail page
-export default async function TemplateDetailPage({ params }: { params: { slug: string } }) {
+export default async function TemplateDetailPage({ params }: PageProps) {
+  // Await the params Promise
+  const resolvedParams = await params;
+
   // Ambil semua kolom yang didefinisikan di TemplateItem
-  const { data: item, error } = await supabase.from("templates").select("*").eq("slug", params.slug).single();
+  const { data: item, error } = await supabase.from("templates").select("*").eq("slug", resolvedParams.slug).single();
 
   if (error || !item) {
     console.error("Failed to fetch template:", error);

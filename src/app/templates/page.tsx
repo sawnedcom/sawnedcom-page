@@ -27,9 +27,17 @@ export const metadata: Metadata = {
   description: "Discover premium, production-ready templates from Sawnedcom.",
 };
 
-export default async function TemplatesPage({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+// Update interface untuk Next.js 15
+interface PageProps {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function TemplatesPage({ searchParams }: PageProps) {
   const supabase = createServerComponentClient(cookies());
-  const searchQuery = (searchParams?.q || "").toString().toLowerCase();
+
+  // Await the searchParams Promise
+  const resolvedSearchParams = await searchParams;
+  const searchQuery = (resolvedSearchParams?.q || "").toString().toLowerCase();
 
   let query = supabase.from("templates").select("*").eq("is_published", true).order("created_at", { ascending: false });
 
@@ -66,7 +74,7 @@ export default async function TemplatesPage({ searchParams }: { searchParams?: {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {templates.map((template: Template) => (
+            {templates?.map((template: Template) => (
               <div key={template.id} className="border border-green-200 dark:border-green-900/30 bg-white dark:bg-black/20 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300">
                 <TemplateCard item={template} />
               </div>
