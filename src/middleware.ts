@@ -27,14 +27,12 @@ export async function middleware(request: NextRequest) {
     error: userError,
   } = await supabase.auth.getUser();
 
-  // --- LOGIKA BARU: Penanganan untuk /login dan /register ---
-  // Jika mencoba mengakses /login atau /register, alihkan ke halaman utama
-  // karena halaman-halaman ini sekarang tidak ada dan hanya admin yang bisa login via Supabase Dashboard.
-  if (request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/register")) {
-    console.log("Middleware: Attempt to access /login or /register, redirecting to homepage.");
-    return NextResponse.redirect(new URL("/", request.url)); // Alihkan ke halaman utama
-  }
-  // --- AKHIR LOGIKA BARU ---
+  // --- BLOK KODE YANG DIHAPUS: Penanganan untuk /login dan /register ---
+  // if (request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/register")) {
+  //   console.log("Middleware: Attempt to access /login or /register, redirecting to homepage.");
+  //   return NextResponse.redirect(new URL("/", request.url)); // Alihkan ke halaman utama
+  // }
+  // --- AKHIR BLOK KODE YANG DIHAPUS ---
 
   // Daftar rute yang dilindungi (membutuhkan login dan peran admin)
   const protectedRoutes = ["/dashboard", "/dashboard/portfolio", "/dashboard/templates", "/dashboard/tutorials"];
