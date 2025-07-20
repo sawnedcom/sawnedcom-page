@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Copyright with subtle animation */}
-          <p className="text-sm text-gray-500 hover:text-gray-300 transition-colors duration-300">&copy; {currentYear} Sawnedcom. All rights reserved.</p>
+          <p className="text-sm text-center text-gray-500 hover:text-gray-300 transition-colors duration-300">&copy; {currentYear} Sawnedcom. All rights reserved.</p>
         </div>
       </div>
     </footer>

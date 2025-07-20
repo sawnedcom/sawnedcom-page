@@ -23,7 +23,7 @@ const AboutSectionHome: React.FC = () => {
           </div>
 
           {/* CTA Button */}
-          <Link href="/about" className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:from-blue-700 hover:to-indigo-700 group">
+          <Link href="/about" className="inline-flex items-center px-4 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:from-blue-700 hover:to-indigo-700 group">
             <span>Learn More About Me</span>
             <User size={20} className="ml-3 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
