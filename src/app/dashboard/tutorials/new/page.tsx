@@ -6,6 +6,19 @@ import { redirect } from "next/navigation";
 import BlogPostForm from "@/components/dashboard/BlogPostForm";
 import { cookies } from "next/headers";
 import { createBlogPost } from "@/app/dashboard/tutorials/actions";
+import { BlogPostItem } from "@/app/dashboard/tutorials/actions";
+
+// Type-safe wrapper for createBlogPost to handle type mismatches
+const createBlogPostWrapper = async (data: Omit<BlogPostItem, "id" | "image_url" | "created_at" | "updated_at">, id?: string, imageFile?: File | null) => {
+  // Process data to match expected types
+  const processedData = {
+    ...data,
+    tags: data.tags || [], // Convert undefined to empty array
+    excerpt: data.excerpt ?? null, // Convert undefined to null
+  };
+
+  return createBlogPost(processedData, id, imageFile);
+};
 
 export default async function NewTutorialPage() {
   const supabase = createServerComponentClient(cookies());
@@ -15,6 +28,7 @@ export default async function NewTutorialPage() {
     data: { session },
     error: sessionError,
   } = await supabase.auth.getSession();
+
   if (!session || sessionError) {
     console.error("NewTutorialPage: No active session found or error:", sessionError);
     redirect("/login");
@@ -38,7 +52,7 @@ export default async function NewTutorialPage() {
 
         {/* Form Container with Premium Styling */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-          <BlogPostForm onSubmitAction={createBlogPost} />
+          <BlogPostForm onSubmitAction={createBlogPostWrapper} />
         </div>
       </div>
     </main>

@@ -15,19 +15,8 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 import "react-quill-new/dist/quill.snow.css";
 
-interface BlogPostItem {
-  id?: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt?: string | null;
-  author: string;
-  tags?: string[];
-  is_published: boolean;
-  image_url?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+// ✅ Import the correct type from the shared source
+import { BlogPostItem } from "@/app/dashboard/tutorials/actions";
 
 interface BlogPostFormProps {
   initialData?: BlogPostItem;
