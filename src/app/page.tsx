@@ -2,7 +2,7 @@
 import { Metadata } from "next";
 import HeroSection from "@/components/home/HeroSection";
 import AboutSectionHome from "@/components/home/AboutSectionHome";
-
+import SocialLinks from "@/components/home/SocialLinks";
 
 /**
  * HomePage: Landing page dengan arsitektur komponen.
@@ -33,6 +33,9 @@ export default function HomePage() {
         </section>
 
         {/* Placeholder untuk section mendatang */}
+        <section className="snap-start bg-[url('/grid-pattern.svg')] bg-[length:40px_40px] dark:bg-[url('/grid-pattern-dark.svg')]">
+          <SocialLinks />
+        </section>
       </div>
     </main>
   );

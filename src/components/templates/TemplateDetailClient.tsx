@@ -5,27 +5,22 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Download, ExternalLink, Gem, ArrowLeft, ChevronDown } from "lucide-react";
-// Import PriceTag jika digunakan, atau ikon lain yang mewakili pembelian.
-// Jika PriceTag tidak digunakan secara langsung, bisa dihapus dari import.
-// Misalnya, jika kamu ingin menampilkan icon keranjang belanja, bisa import ShoppingCart
 
-// PENTING: Interface ini HARUS SAMA PERSIS dengan `TemplateItem` di `src/app/templates/[slug]/page.tsx`
-// Pastikan semua properti yang bisa NULL dari database ditandai dengan `| null`.
 interface TemplateItemProps {
-  id: string; // Tambahkan `id` di sini agar konsisten dengan `page.tsx` jika itu yang dikirim
+  id: string;
   name: string;
   description: string;
   image_url: string;
   type: "free" | "premium";
-  download_url: string | null; // <-- Diperbaiki: string atau null
-  gumroad_url: string | null; // <-- Diperbaiki: string atau null
-  lynkid_url: string | null; // <-- Diperbaiki: string atau null
-  payhip_url: string | null; // <-- Diperbaiki: string atau null
-  live_demo_url: string | null; // <-- Diperbaiki: string atau null
-  price: number | null; // <-- Diperbaiki: number atau null
+  download_url: string | null;
+  gumroad_url: string | null;
+  lynkid_url: string | null;
+  payhip_url: string | null;
+  live_demo_url: string | null;
+  price: number | null;
   features: string[] | null;
+  tags: string[]; // <-- TAMBAHKAN INI UNTUK MENERIMA DATA TAGS
   slug: string;
-  // Jika `created_at` dan `updated_at` dikirim dari `page.tsx`, tambahkan di sini juga:
   created_at?: string;
   updated_at?: string | null;
 }
@@ -34,7 +29,10 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // console.log("Template Item received in TemplateDetailClient:", item);
+  // console.log("Features array:", item.features);
+  // console.log("Tags array:", item.tags); // <-- TAMBAHKAN LOG INI UNTUK DEBUGGING TAGS
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -48,16 +46,14 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
     };
   }, []);
 
-  // Get available purchase options for premium templates
   const getPurchaseOptions = () => {
     const options = [];
 
-    // Pastikan item.gumroad_url tidak null atau string kosong
     if (item.gumroad_url) {
       options.push({
         name: "Gumroad",
         url: item.gumroad_url,
-        icon: "🛒", // Gunakan ikon yang konsisten jika ada
+        icon: "🛒",
         description: "Buy on Gumroad",
       });
     }
@@ -98,7 +94,7 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
 
         {/* Template Header */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-400 dark:to-blue-400">{item.name}</h1>
+          <h1 className="text-2xl md:text-5xl pb-1 lg:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-400 dark:to-blue-400">{item.name}</h1>
           <div className="w-24 h-1.5 bg-gradient-to-r from-green-500 to-blue-500 mx-auto rounded-full mb-8"></div>
         </div>
 
@@ -114,7 +110,20 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{item.description}</p>
         </div>
 
-        {/* Features List */}
+        {/* Tags List (BARU DITAMBAHKAN) */}
+        {item.tags && item.tags.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {" "}
+            {/* Adjusted margin-bottom for spacing */}
+            {item.tags.map((tag, index) => (
+              <span key={index} className="bg-green-100 text-green-800 text-sm font-medium px-4 py-2 rounded-full dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800 shadow-sm">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Features List (Sudah ada) */}
         {item.features && item.features.length > 0 && (
           <div className="flex flex-wrap justify-center gap-3 mb-16">
             {item.features.map((feature, index) => (
@@ -126,15 +135,14 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
         )}
 
         {/* Price Display (for premium templates) */}
-        {item.type === "premium" &&
-          item.price !== null && ( // <-- Diperbaiki: Cek `!== null`
-            <div className="text-center mb-12">
-              <div className="inline-block bg-white dark:bg-gray-800 px-8 py-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">${item.price.toLocaleString()}</span>
-                <span className="block text-sm text-gray-500 dark:text-gray-400 mt-1">One-time payment</span>
-              </div>
+        {item.type === "premium" && item.price !== null && (
+          <div className="text-center mb-12">
+            <div className="inline-block bg-white dark:bg-gray-800 px-8 py-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">${item.price.toLocaleString()}</span>
+              <span className="block text-sm text-gray-500 dark:text-gray-400 mt-1">One-time payment</span>
             </div>
-          )}
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-6 mb-20">
@@ -155,13 +163,11 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
           {item.type === "premium" && purchaseOptions.length > 0 && (
             <div className="relative" ref={dropdownRef}>
               {purchaseOptions.length === 1 ? (
-                // Single option - show as regular button
                 <a href={purchaseOptions[0].url} target="_blank" rel="noopener noreferrer" className="flex items-center px-8 py-4 bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-medium rounded-xl hover:from-yellow-600 hover:to-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl">
                   <Gem size={20} className="mr-3" />
                   Get This Template
                 </a>
               ) : (
-                // Multiple options - show as dropdown
                 <>
                   <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex items-center px-8 py-4 bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-medium rounded-xl hover:from-yellow-600 hover:to-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl">
                     <Gem size={20} className="mr-3" />

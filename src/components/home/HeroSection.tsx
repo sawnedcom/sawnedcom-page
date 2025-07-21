@@ -32,7 +32,7 @@ const HeroSection: React.FC = () => {
             Digital Solutions
           </h1>
 
-          <p className="text-xl md:text-2xl opacity-90 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">Creating innovative, high-performance web/app/software experiences with cutting-edge technologies and user-centric design.</p>
+          <p className="text-xl md:text-xl opacity-90 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">Creating innovative, high-performance web/app/software experiences with cutting-edge technologies and user-centric design.</p>
 
           <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
             <Link href="/portfolio" className="group inline-flex items-center justify-center px-8 py-4 bg-white text-blue-700 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gray-50">
