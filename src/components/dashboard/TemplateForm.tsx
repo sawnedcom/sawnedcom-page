@@ -253,7 +253,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
         {/* Tags */}
         <div>
           <label htmlFor="tags" className="block text-sm font-semibold text-gray-200 mb-1">
-            Tags (Pisahkan dengan koma)
+            Tags/Framework (Pisahkan dengan koma)
           </label>
           <input type="text" id="tags" value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" placeholder="HTML, CSS, JavaScript, Responsive, Blog" />
           <p className="mt-1 text-xs text-gray-400">Contoh: &quot;Website, Portofolio, E-commerce, Blog&quot;</p>
