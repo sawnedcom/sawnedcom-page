@@ -21,6 +21,7 @@ interface TemplateItem {
   live_demo_url: string | null; // Harus string | null
   price: number | null; // Harus number | null
   features: string[] | null;
+  tags: string[]; // Ubah ke string[] (tidak null) agar match dengan TemplateItemProps
   slug: string;
   created_at?: string; // Jika ada di DB
   updated_at?: string | null; // Jika ada di DB
@@ -79,6 +80,12 @@ export default async function TemplateDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  // Pastikan tags ada, jika tidak berikan array kosong
+  const itemWithTags: TemplateItem = {
+    ...item,
+    tags: Array.isArray(item.tags) ? item.tags : [], // Pastikan tags selalu array
+  };
+
   // PENTING: Lakukan type assertion ke TemplateItem
-  return <TemplateDetailClient item={item as TemplateItem} />;
+  return <TemplateDetailClient item={itemWithTags} />;
 }
