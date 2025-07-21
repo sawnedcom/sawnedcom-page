@@ -264,7 +264,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
           <div className="flex items-center p-3 bg-gray-700 rounded-lg border border-gray-600 shadow-sm">
             <input type="checkbox" id="isFree" checked={isFree} onChange={(e) => setIsFree(e.target.checked)} className="h-5 w-5 text-blue-500 border-gray-500 rounded focus:ring-blue-500 cursor-pointer bg-gray-600" />
             <label htmlFor="isFree" className="ml-3 block text-base font-medium text-gray-100 cursor-pointer">
-              Template Gratis
+              Template Free
             </label>
           </div>
 
