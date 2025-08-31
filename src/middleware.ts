@@ -1,4 +1,5 @@
 // src/middleware.ts
+// Impor createServerClient dan CookieOptions dari @supabase/ssr
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -6,6 +7,7 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
+  // Inisialisasi Supabase client untuk middleware
   const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
     cookies: {
       get(name: string) {
@@ -20,22 +22,15 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // --- PERBAIKAN DI SINI ---
   // Dapatkan pengguna yang terverifikasi. Ini adalah cara paling aman untuk mendapatkan data pengguna di middleware.
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+  // --- END PERBAIKAN ---
 
-  // --- LOGIKA BARU: Penanganan untuk /login dan /register ---
-  // Jika mencoba mengakses /login atau /register, alihkan ke halaman utama
-  // karena halaman-halaman ini sekarang tidak ada dan hanya admin yang bisa login via Supabase Dashboard.
-  if (request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/register")) {
-    console.log("Middleware: Attempt to access /login or /register, redirecting to homepage.");
-    return NextResponse.redirect(new URL("/", request.url)); // Alihkan ke halaman utama
-  }
-  // --- AKHIR LOGIKA BARU ---
-
-  // Daftar rute yang dilindungi (membutuhkan login dan peran admin)
+  // Daftar rute yang dilindungi (membutuhkan login)
   const protectedRoutes = ["/dashboard", "/dashboard/portfolio", "/dashboard/templates", "/dashboard/tutorials"];
 
   // Cek apakah path saat ini adalah salah satu rute yang dilindungi
@@ -44,27 +39,37 @@ export async function middleware(request: NextRequest) {
   // --- Logika Autentikasi dan Otorisasi ---
 
   // 1. Jika tidak ada pengguna yang terverifikasi dan pengguna mencoba mengakses rute yang dilindungi,
-  //    arahkan mereka ke halaman utama.
+  //    arahkan mereka ke halaman login.
   if (isProtectedRoute && (!user || userError)) {
-    console.warn("Middleware: No verified user or user verification error, redirecting from protected route to homepage.");
-    return NextResponse.redirect(new URL("/", request.url)); // Arahkan ke halaman utama
+    // Menggunakan 'user' dan 'userError'
+    console.warn("Middleware: No verified user or user verification error, redirecting to login.");
+    const redirectUrl = new URL("/login", request.url);
+    redirectUrl.searchParams.set("redirectedFrom", request.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
-  // Catatan: Bagian ini dihapus karena /login tidak lagi ada:
-  // if (user && request.nextUrl.pathname === "/login") {
-  //   console.log("Middleware: User already logged in, redirecting from login to dashboard.");
-  //   return NextResponse.redirect(new URL("/dashboard", request.url));
-  // }
+  // 2. Jika ada pengguna yang terverifikasi dan pengguna mencoba mengakses halaman login,
+  //    arahkan mereka ke dashboard (agar tidak bisa login lagi saat sudah login).
+  if (user && request.nextUrl.pathname === "/login") {
+    // Menggunakan 'user'
+    console.log("Middleware: User already logged in, redirecting from login to dashboard.");
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-  // 2. Jika ada pengguna yang terverifikasi dan ini adalah rute yang dilindungi,
+  // 3. Jika ada pengguna yang terverifikasi dan ini adalah rute yang dilindungi,
   //    periksa apakah pengguna adalah admin.
   if (isProtectedRoute && user) {
-    const { data: profile, error: profileError } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+    // Menggunakan 'user'
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", user.id) // Menggunakan user.id yang sudah diverifikasi
+      .single();
 
     if (profileError || !profile || !profile.is_admin) {
       console.warn("Middleware: Verified user is not admin or profile not found, redirecting from protected route.");
-      // Jika bukan admin atau profil tidak ditemukan, arahkan ke halaman utama
-      return NextResponse.redirect(new URL("/", request.url));
+      // Jika bukan admin atau profil tidak ditemukan, arahkan ke halaman utama atau halaman error akses
+      return NextResponse.redirect(new URL("/", request.url)); // Arahkan ke halaman utama
     }
   }
 
