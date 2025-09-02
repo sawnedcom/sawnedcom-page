@@ -22,63 +22,47 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // --- PERBAIKAN DI SINI ---
-  // Dapatkan pengguna yang terverifikasi. Ini adalah cara paling aman untuk mendapatkan data pengguna di middleware.
+  // --- Ambil user yang terverifikasi ---
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  // --- END PERBAIKAN ---
 
-  // Daftar rute yang dilindungi (membutuhkan login)
+  // Daftar rute yang dilindungi (hanya admin terverifikasi)
   const protectedRoutes = ["/dashboard", "/dashboard/portfolio", "/dashboard/templates", "/dashboard/tutorials"];
 
-  // Cek apakah path saat ini adalah salah satu rute yang dilindungi
   const isProtectedRoute = protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route));
 
   // --- Logika Autentikasi dan Otorisasi ---
 
-  // 1. Jika tidak ada pengguna yang terverifikasi dan pengguna mencoba mengakses rute yang dilindungi,
-  //    arahkan mereka ke halaman login.
+  // 1. Jika tidak ada user + coba akses protected route → redirect ke endpoint login rahasia
   if (isProtectedRoute && (!user || userError)) {
-    // Menggunakan 'user' dan 'userError'
-    console.warn("Middleware: No verified user or user verification error, redirecting to login.");
-    const redirectUrl = new URL("/login", request.url);
+    console.warn("Middleware: No verified user, redirecting to hidden login.");
+    const redirectUrl = new URL("/public/api/v2/session", request.url);
     redirectUrl.searchParams.set("redirectedFrom", request.nextUrl.pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
-  // 2. Jika ada pengguna yang terverifikasi dan pengguna mencoba mengakses halaman login,
-  //    arahkan mereka ke dashboard (agar tidak bisa login lagi saat sudah login).
-  if (user && request.nextUrl.pathname === "/login") {
-    // Menggunakan 'user'
-    console.log("Middleware: User already logged in, redirecting from login to dashboard.");
+  // 2. Jika sudah login, tapi coba akses endpoint login rahasia → redirect ke dashboard
+  if (user && request.nextUrl.pathname === "/public/api/v2/session") {
+    console.log("Middleware: User already logged in, redirecting from hidden login to dashboard.");
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // 3. Jika ada pengguna yang terverifikasi dan ini adalah rute yang dilindungi,
-  //    periksa apakah pengguna adalah admin.
+  // 3. Jika user terverifikasi dan akses protected route → cek apakah admin
   if (isProtectedRoute && user) {
-    // Menggunakan 'user'
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", user.id) // Menggunakan user.id yang sudah diverifikasi
-      .single();
+    const { data: profile, error: profileError } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
 
     if (profileError || !profile || !profile.is_admin) {
-      console.warn("Middleware: Verified user is not admin or profile not found, redirecting from protected route.");
-      // Jika bukan admin atau profil tidak ditemukan, arahkan ke halaman utama atau halaman error akses
-      return NextResponse.redirect(new URL("/", request.url)); // Arahkan ke halaman utama
+      console.warn("Middleware: Verified user is not admin, redirecting from protected route.");
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
-  // Lanjutkan ke permintaan berikutnya jika semua pemeriksaan lolos
   return response;
 }
 
-// Konfigurasi matcher untuk middleware
-// Ini menentukan rute mana yang akan dilewati oleh middleware
+// Konfigurasi matcher
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };

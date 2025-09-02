@@ -5,7 +5,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { User, Code, Smartphone, GamepadIcon, Puzzle, Zap, Award } from "lucide-react";
+import { User, Code, Smartphone, GamepadIcon, Puzzle, Award } from "lucide-react";
 
 const AboutSectionHome: React.FC = () => {
   const skills = [
@@ -16,7 +16,7 @@ const AboutSectionHome: React.FC = () => {
   ];
 
   return (
-    <section className="relative py-16 sm:py-20 md:py-28 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
+    <section className="relative py-16 sm:py-20 md:py-28 bg-slate-800 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-40 sm:w-56 md:w-72 h-40 sm:h-56 md:h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -24,40 +24,31 @@ const AboutSectionHome: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-64 md:w-80 h-48 sm:h-64 md:h-80 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-96 relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-full text-blue-300 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
-              <User size={14} className="sm:w-4 sm:h-4" />
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3  bg-white/10 backdrop-blur-sm text-white/80 text-sm font-medium rounded-full border border-white/10 mb-4 sm:mb-6">
               <span>About Me</span>
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-[#FFD93D] rounded-full animate-pulse"></div>
             </div>
 
-            <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400  to-cyan-400 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
+            <h2 className="mt-5 text-4xl sm:text-5xl md:text-6xl font-semibold text-[#FFD93D] mb-4 sm:mb-6 leading-tight">
               Digital
-              <span className="block text-white">Professional</span>
+              <span className="text-white"> Professional</span>
             </h2>
-
-            <div className="flex justify-center items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-              <div className="w-12 sm:w-16 h-1 bg-gradient-to-r from-transparent to-blue-500 rounded-full"></div>
-              <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                <Zap size={14} className="sm:w-4 sm:h-4 text-white" />
-              </div>
-              <div className="w-12 sm:w-16 h-1 bg-gradient-to-r from-purple-500 to-transparent rounded-full"></div>
-            </div>
           </div>
 
           {/* Content Grid */}
           <div className="grid lg:grid-cols-2 gap-10 sm:gap-14 md:gap-16 items-center mb-16 sm:mb-20">
             {/* Left */}
             <div className="space-y-6 sm:space-y-8">
-              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed text-gray-300">
-                As a <span className="font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Full-Stack Developer</span> with over 5 years of experience, I specialize in creating modern applications that push the boundaries of what’s possible.
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-gray-300">
+                As a <span className="font-semibold text-[#FFD93D]">Full-Stack Developer</span> with over 5 years of experience, I specialize in creating modern applications that push the boundaries of what’s possible.
               </p>
 
-              <p className="text-base sm:text-lg leading-relaxed text-gray-400">
-                I craft <span className="font-semibold text-white">web, mobile, software, and game applications</span> that are not just functional, but extraordinary. Every project is built with <span className="font-semibold text-blue-400">responsive design</span>, <span className="font-semibold text-purple-400">high performance</span>, and an obsessive focus on user experience.
+              <p className="text-base sm:text-lg leading-relaxed text-gray-300">
+                I craft <span className="font-semibold text-white">web, mobile, software, and game applications</span> that are not just functional, but extraordinary. Every project is built with <span className="font-semibold text-[#FFD93D]">responsive design, high performance</span> and an obsessive focus on user experience.
               </p>
 
               {/* Skills */}
