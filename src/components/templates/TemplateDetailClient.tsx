@@ -218,7 +218,7 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Template Overview</h2>
               </div>
               <div className="prose prose-lg dark:prose-invert max-w-none">
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">{item.description}</p>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg whitespace-pre-line">{item.description}</p>
               </div>
             </div>
           </div>
