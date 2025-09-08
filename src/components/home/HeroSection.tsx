@@ -47,7 +47,7 @@ const HeroSection: React.FC = () => {
           <p className="text-base md:text-xl opacity-90 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">Crafting innovative and high performance software, web, mobile and game experiences using cutting edge technologies with a focus on user centered design</p>
 
           <div className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
-            <Link href="/portfolio" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 text-white text-lg font-normal rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+            <Link href="/portfolio" className="relative group inline-flex items-center justify-center px-6 py-3 shadow-gray-100 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
               {/* Gradient animasi */}
               <div className="absolute inset-0 bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
 

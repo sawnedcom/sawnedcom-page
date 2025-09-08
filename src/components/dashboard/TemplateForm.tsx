@@ -5,8 +5,17 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, CheckCircle, XCircle, UploadCloud } from "lucide-react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import "react-quill-new/dist/quill.snow.css";
 
-// Definisi interface untuk item template
+// Memuat komponen ReactQuill secara dinamis untuk mencegah rendering di sisi server (SSR)
+// Ini penting karena ReactQuill membutuhkan objek 'window' yang hanya tersedia di browser.
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+  ssr: false,
+  loading: () => <div className="h-48 bg-gray-700 rounded-lg animate-pulse"></div>,
+});
+
+// --- Definisi Tipe dan Props ---
 interface TemplateItem {
   id: string;
   name: string;
@@ -19,32 +28,26 @@ interface TemplateItem {
   lynkid_url: string | null;
   payhip_url: string | null;
   tags: string[];
-  price: number; // Ini akan diasumsikan dalam USD
+  price: number;
   is_free: boolean;
   is_published: boolean;
   type: string;
-  created_at: string; // Tambahkan ini jika initialData bisa punya created_at
+  created_at: string;
 }
 
-// Props untuk form
 interface TemplateFormProps {
   initialData?: TemplateItem;
   onSubmitAction: (data: Omit<TemplateItem, "id" | "created_at" | "image_url">, id?: string, imageFile?: File | null) => Promise<{ success: boolean; message: string }>;
 }
 
+// --- Komponen TemplateForm ---
 const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction }) => {
   const router = useRouter();
 
-  // State untuk form
+  // State untuk data form
   const [name, setName] = useState(initialData?.name || "");
   const [slug, setSlug] = useState(initialData?.slug || "");
   const [description, setDescription] = useState(initialData?.description || "");
-
-  // Image handling states
-  const [existingImageUrl, setExistingImageUrl] = useState(initialData?.image_url || "");
-  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(initialData?.image_url || "");
-
   const [liveDemoUrl, setLiveDemoUrl] = useState(initialData?.live_demo_url || "");
   const [downloadUrl, setDownloadUrl] = useState(initialData?.download_url || "");
   const [gumroadUrl, setGumroadUrl] = useState(initialData?.gumroad_url || "");
@@ -56,8 +59,19 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
   const [isPublished, setIsPublished] = useState(initialData?.is_published || false);
   const [type, setType] = useState(initialData?.type || "");
 
+  // State untuk image
+  const [existingImageUrl, setExistingImageUrl] = useState(initialData?.image_url || "");
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(initialData?.image_url || "");
+
+  // State untuk status UI
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Konfigurasi toolbar untuk ReactQuill
+  const quillModules = {
+    toolbar: [[{ header: [1, 2, 3, false] }], ["bold", "italic", "underline", "strike"], [{ list: "ordered" }, { list: "bullet" }], ["link", "image"], [{ color: [] }, { background: [] }], ["clean", "code-block"]],
+  };
 
   // Effect untuk membersihkan URL objek pratinjau saat komponen unmount
   useEffect(() => {
@@ -68,22 +82,20 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
     };
   }, [imagePreviewUrl]);
 
-  // Handler untuk perubahan input file
+  // Handler untuk perubahan input file gambar
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedImageFile(file);
-      // Revoke previous blob URL if exists
       if (imagePreviewUrl && imagePreviewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(imagePreviewUrl);
       }
       setImagePreviewUrl(URL.createObjectURL(file));
-      setExistingImageUrl(""); // Clear existing URL if a new file is chosen
+      setExistingImageUrl("");
     } else {
       setSelectedImageFile(null);
-      // Restore initial image if editing and no new file selected, otherwise clear
       setImagePreviewUrl(initialData?.image_url || "");
-      setExistingImageUrl(initialData?.image_url || ""); // Ensure existing URL is restored
+      setExistingImageUrl(initialData?.image_url || "");
     }
   };
 
@@ -98,24 +110,24 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
       .map((tag) => tag.trim())
       .filter((tag) => tag !== "");
 
-    const templateType = isFree ? "free" : "premium";
-
-    // --- START: Client-side validation for price ---
+    // Validasi harga untuk template premium
     if (!isFree) {
       if (typeof price !== "number" || isNaN(price) || price < 0 || price > 1000000) {
-        setMessage({ type: "error", text: "Harga tidak valid. Harga harus berupa angka positif antara $0.00 dan $1,000,000.00." });
+        setMessage({ type: "error", text: "Harga tidak valid. Harga harus berupa angka positif." });
         setLoading(false);
         return;
       }
       const priceString = price.toString();
       if (priceString.includes(".") && priceString.split(".")[1].length > 2) {
-        setMessage({ type: "error", text: "Harga tidak valid. Maksimal 2 angka desimal diperbolehkan." });
+        setMessage({ type: "error", text: "Harga tidak valid. Maksimal 2 angka desimal." });
         setLoading(false);
         return;
       }
     }
-    // --- END: Client-side validation for price ---
 
+    const templateType = isFree ? "free" : "premium";
+
+    // Data yang akan dikirim ke aksi
     const dataToSubmit: Omit<TemplateItem, "id" | "created_at" | "image_url"> = {
       name,
       slug,
@@ -138,7 +150,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
       if (result.success) {
         setMessage({ type: "success", text: result.message });
         if (!initialData) {
-          // Reset form fields only for new template creation
+          // Reset form setelah berhasil menambahkan template baru
           setName("");
           setSlug("");
           setDescription("");
@@ -156,7 +168,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
           setIsPublished(false);
           setType("");
         } else {
-          // If editing and a new file was selected, update the existingImageUrl to the new preview
+          // Perbarui state gambar setelah edit berhasil
           if (selectedImageFile) {
             setExistingImageUrl(imagePreviewUrl);
           }
@@ -179,6 +191,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
     }
   };
 
+  // --- Rendering JSX ---
   return (
     <div className="bg-gray-800 dark:bg-gray-900 p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-750 max-w-3xl mx-auto my-8 text-gray-100">
       <h2 className="text-2xl font-bold text-gray-100 mb-6 text-center">{initialData ? "Edit Template" : "Tambah Template Baru"}</h2>
@@ -199,12 +212,14 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
           <input type="text" id="slug" value={slug} onChange={(e) => setSlug(e.target.value)} required className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" placeholder="nama-template-anda-yang-unik" />
         </div>
 
-        {/* Deskripsi */}
+        {/* Deskripsi (Rich Text Editor) */}
         <div>
-          <label htmlFor="description" className="block text-sm font-semibold text-gray-200 mb-1">
-            Deskripsi <span className="text-red-400">*</span>
+          <label htmlFor="description-editor" className="block text-sm font-semibold text-gray-200 mb-1">
+            Deskripsi (Rich Text) <span className="text-red-400">*</span>
           </label>
-          <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required rows={5} className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 resize-y" placeholder="Jelaskan fitur dan kegunaan template ini secara detail."></textarea>
+          <div className="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden">
+            <ReactQuill theme="snow" value={description} onChange={setDescription} modules={quillModules} className="text-gray-100" placeholder="Jelaskan fitur dan kegunaan template ini secara detail." />
+          </div>
         </div>
 
         {/* Input Upload Gambar */}
@@ -235,6 +250,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
               </div>
             </div>
           )}
+
           {!initialData && !selectedImageFile && !existingImageUrl && (
             <p className="text-sm text-red-400 mt-4">
               <XCircle size={16} className="inline-block mr-1" /> Gambar wajib diupload untuk template baru.
@@ -256,10 +272,10 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
             Tags/Framework (Pisahkan dengan koma)
           </label>
           <input type="text" id="tags" value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" placeholder="HTML, CSS, JavaScript, Responsive, Blog" />
-          <p className="mt-1 text-xs text-gray-400">Contoh: &quot;Website, Portofolio, E-commerce, Blog&quot;</p>
+          <p className="mt-1 text-xs text-gray-400">Contoh: &quot;HTML, CSS, JavaScript, Website, Portofolio, E-commerce, Blog&quot;</p>
         </div>
 
-        {/* Status Gratis & Type */}
+        {/* Status Gratis & Tipe */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex items-center p-3 bg-gray-700 rounded-lg border border-gray-600 shadow-sm">
             <input type="checkbox" id="isFree" checked={isFree} onChange={(e) => setIsFree(e.target.checked)} className="h-5 w-5 text-blue-500 border-gray-500 rounded focus:ring-blue-500 cursor-pointer bg-gray-600" />
@@ -267,7 +283,6 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
               Template Free
             </label>
           </div>
-
           <div>
             <label htmlFor="type" className="block text-sm font-semibold text-gray-200 mb-1">
               Tipe Framework/Bahasa <span className="text-red-400">*</span>
@@ -276,7 +291,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
           </div>
         </div>
 
-        {/* Conditional Fields: Download URL / Price & Platform URLs */}
+        {/* Bidang Kondisional: URL Download / Harga & URL Platform */}
         {isFree ? (
           <div>
             <label htmlFor="downloadUrl" className="block text-sm font-semibold text-gray-200 mb-1">
@@ -287,7 +302,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Price */}
+            {/* Harga */}
             <div>
               <label htmlFor="price" className="block text-sm font-semibold text-gray-200 mb-1">
                 Harga (USD) <span className="text-red-400">*</span>
@@ -295,7 +310,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
               <input type="number" id="price" value={price} onChange={(e) => setPrice(parseFloat(e.target.value) || 0)} required={!isFree} min="0" step="0.01" className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" placeholder="Cth: 19.99" />
             </div>
 
-            {/* Platform URLs */}
+            {/* URL Platform */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="gumroadUrl" className="block text-sm font-semibold text-gray-200 mb-1">
@@ -304,7 +319,6 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
                 <input type="url" id="gumroadUrl" value={gumroadUrl} onChange={(e) => setGumroadUrl(e.target.value)} className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" placeholder="https://yourgumroad.com/l/your-template" />
                 <p className="mt-1 text-xs text-gray-400">Link produk Anda di Gumroad.</p>
               </div>
-
               <div>
                 <label htmlFor="lynkidUrl" className="block text-sm font-semibold text-gray-200 mb-1">
                   URL Lynkid
@@ -312,7 +326,6 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
                 <input type="url" id="lynkidUrl" value={lynkidUrl} onChange={(e) => setLynkidUrl(e.target.value)} className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200" placeholder="https://lynkid.com/your-template" />
                 <p className="mt-1 text-xs text-gray-400">Link produk Anda di Lynkid.</p>
               </div>
-
               <div>
                 <label htmlFor="payhipUrl" className="block text-sm font-semibold text-gray-200 mb-1">
                   URL Payhip
@@ -332,7 +345,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
           </label>
         </div>
 
-        {/* Pesan Status (Animasi & Posisi Fixed) */}
+        {/* Pesan Status */}
         {message && (
           <div className={`fixed bottom-6 right-6 p-4 rounded-lg shadow-xl flex items-center transform transition-all duration-300 ease-out z-50 animate-slideInFromRight ${message.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"}`}>
             {message.type === "success" ? <CheckCircle size={24} className="mr-3" /> : <XCircle size={24} className="mr-3" />}
@@ -355,7 +368,7 @@ const TemplateForm: React.FC<TemplateFormProps> = ({ initialData, onSubmitAction
         </button>
       </form>
 
-      {/* Styled-jsx for animations */}
+      {/* Gaya untuk animasi */}
       <style jsx>{`
         @keyframes slideInFromRight {
           from {

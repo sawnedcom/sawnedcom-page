@@ -89,7 +89,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ item, className }) => {
           )}
 
           {/* Main Image */}
-          <Image src={imageError ? "/placeholder-template.jpg" : item.image_url || "/placeholder-template.jpg"} alt={item.name} fill className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" onLoad={() => handleImageLoad()} onError={() => handleImageError()} />
+          <Image src={imageError ? "/placeholder-template.jpg" : item.image_url || "/placeholder-template.jpg"} alt={item.name} fill className="object-contain transition-all duration-700 group-hover:scale-110 group-hover:rotate-1" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" onLoad={handleImageLoad} onError={handleImageError} />
 
           {/* Gradient Overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
@@ -144,7 +144,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ item, className }) => {
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-2 flex-grow">{item.description}</p>
+        <div className="prose text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-2 flex-grow" dangerouslySetInnerHTML={{ __html: item.description }} />
 
         {/* Type and Downloads Info */}
         <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">

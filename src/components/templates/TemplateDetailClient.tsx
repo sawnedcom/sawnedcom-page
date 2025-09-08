@@ -32,6 +32,94 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
   const [shareOpen, setShareOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [descriptionContent, setDescriptionContent] = useState(item.description);
+  const maxLength = 300;
+  const isLongEnough = (item.description.replace(/<[^>]+>/g, "") || "").length > maxLength;
+
+  useEffect(() => {
+    const getTruncatedHtml = (html: string | null, limit: number): string => {
+      if (!html || typeof window === "undefined") {
+        return html || "";
+      }
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const nodesToProcess: Node[] = Array.from(doc.body.childNodes);
+      const resultNodes: Node[] = [];
+
+      let currentLimit = limit;
+
+      while (nodesToProcess.length > 0 && currentLimit > 0) {
+        const node = nodesToProcess.shift();
+        if (!node) continue;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.nodeValue || "";
+          if (text.length <= currentLimit) {
+            resultNodes.push(node);
+            currentLimit -= text.length;
+          } else {
+            const truncatedText = text.substring(0, currentLimit);
+            resultNodes.push(document.createTextNode(truncatedText));
+            currentLimit = 0;
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          const clonedElement = element.cloneNode(false) as HTMLElement;
+          resultNodes.push(clonedElement);
+
+          const children = Array.from(element.childNodes);
+          for (let i = children.length - 1; i >= 0; i--) {
+            nodesToProcess.unshift(children[i]);
+          }
+        }
+      }
+
+      const tempDiv = document.createElement("div");
+      resultNodes.forEach((node) => tempDiv.appendChild(node));
+
+      const isTruncated = tempDiv.innerHTML.length < html.length && html.replace(/<[^>]+>/g, "").length > limit;
+      if (isTruncated) {
+        const lastNode = tempDiv.lastChild;
+        if (lastNode && lastNode.nodeType === Node.TEXT_NODE) {
+          lastNode.nodeValue = lastNode.nodeValue!.replace(/\s*\S*$/, "");
+        }
+
+        tempDiv.innerHTML += "...";
+      }
+
+      const closedHtml = tempDiv.innerHTML;
+      const openTags = [];
+      const tagRegex = /<(\/?)(\w+)[^>]*>/g;
+      let match;
+      while ((match = tagRegex.exec(closedHtml)) !== null) {
+        if (match[1] === "/") {
+          openTags.pop();
+        } else {
+          openTags.push(match[2]);
+        }
+      }
+
+      let finalHtml = closedHtml;
+      while (openTags.length > 0) {
+        finalHtml += `</${openTags.pop()}>`;
+      }
+
+      return finalHtml;
+    };
+
+    if (isDescriptionExpanded) {
+      setDescriptionContent(item.description);
+    } else {
+      if (isLongEnough) {
+        setDescriptionContent(getTruncatedHtml(item.description, maxLength));
+      } else {
+        setDescriptionContent(item.description);
+      }
+    }
+  }, [isDescriptionExpanded, item.description, maxLength, isLongEnough]);
+
   const handleImageLoad = () => {
     setImageLoading(false);
   };
@@ -191,7 +279,7 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
             </div>
           )}
 
-          <Image src={item.image_url || "/placeholder-template-large.jpg"} alt={item.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw" priority onLoad={handleImageLoad} />
+          <Image src={item.image_url || "/placeholder-template-large.jpg"} alt={item.name} fill className="object-contain transition-transform duration-700 group-hover:scale-105 p-4" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw" priority onLoad={handleImageLoad} />
 
           {/* Image Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -218,7 +306,13 @@ const TemplateDetailClient: React.FC<{ item: TemplateItemProps }> = ({ item }) =
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Template Overview</h2>
               </div>
               <div className="prose prose-lg dark:prose-invert max-w-none">
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg whitespace-pre-line">{item.description}</p>
+                {/* Menghapus style pointerEvents yang menghalangi klik pada link */}
+                <div dangerouslySetInnerHTML={{ __html: descriptionContent }} className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg [&_a]:text-blue-600 dark:[&_a]:text-blue-400 [&_a]:hover:text-blue-800 dark:[&_a]:hover:text-blue-300 [&_a]:underline [&_a]:cursor-pointer" />
+                {isLongEnough && (
+                  <button onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)} className="mt-4 text-blue-500 hover:text-blue-600 font-semibold text-base transition-all duration-200 cursor-pointer">
+                    {isDescriptionExpanded ? "Show Less" : "More Information"}
+                  </button>
+                )}
               </div>
             </div>
           </div>
