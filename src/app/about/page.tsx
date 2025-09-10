@@ -1,8 +1,6 @@
-// src/app/about/page.tsx
 "use client";
 import { Briefcase, Code, Wrench, Rocket, Cpu, Smartphone, Gamepad2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { fadeIn, staggerContainer } from "@/utils/motion";
 import Image from "next/image";
 
 export default function AboutPage() {
@@ -47,7 +45,7 @@ export default function AboutPage() {
   const tools = ["VS Code", "Unity", "Figma", "Android Studio"];
 
   return (
-    <motion.main variants={staggerContainer(0.1, 0.2)} initial="hidden" animate="show" className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 py-16 md:py-20 relative overflow-hidden">
+    <motion.main className="min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 py-16 md:py-20 relative overflow-hidden" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
       {/* Subtle Background Elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -57,15 +55,15 @@ export default function AboutPage() {
 
       <div className="max-w-6xl mx-auto px-6 lg:px-8 relative z-10">
         {/* Hero Section */}
-        <motion.section variants={fadeIn("up", "spring", 0.2, 1)} className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-bold bg-clip-text mb-6">About Me</h1>
+        <motion.section className="text-center mb-20" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
+          <h1 className="text-5xl md:text-6xl font-bold bg-clip-text mb-6 pt-28">About Me</h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Passionate developer crafting impactful digital products across <span className="font-semibold text-white">web, mobile, software, and games</span>. My mission is to merge technology and creativity into meaningful experiences.
           </p>
         </motion.section>
 
         {/* Profile Card */}
-        <motion.section variants={fadeIn("up", "spring", 0.4, 1)} className="bg-gray-800/50 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-20 border border-gray-700/50 flex flex-col md:flex-row items-center gap-10 hover:shadow-blue-500/10 transition-all duration-500">
+        <motion.section className="bg-gray-800/50 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 mb-20 border border-gray-700/50 flex flex-col md:flex-row items-center gap-10 hover:shadow-blue-500/10 transition-all duration-500" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
           <div className="relative group flex-shrink-0">
             <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl relative">
               <Image src="/images/logo.jpg" alt="Sawnedcom Profile" fill className="object-cover transition-transform duration-700 group-hover:scale-110" priority />
@@ -75,7 +73,7 @@ export default function AboutPage() {
           </div>
 
           <div className="text-center md:text-left">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r text-[#f34e3f] bg-clip-text ">Sawnedcom</h2>
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r text-[#f34e3f] bg-clip-text">Sawnedcom</h2>
             <div className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 text-blue-300 rounded-full text-lg font-medium mb-6">Web, Mobile, Software & Game Developer</div>
             <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
               I build high-quality digital products ranging from
@@ -88,14 +86,14 @@ export default function AboutPage() {
         </motion.section>
 
         {/* Skills Section */}
-        <motion.section variants={fadeIn("up", "spring", 0.6, 1)} className="mb-20">
+        <motion.section className="mb-20" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
           <h2 className="text-4xl font-bold text-center mb-12 flex items-center justify-center gap-3">
             <Code className="text-blue-400" size={32} />
             <span className="bg-gradient-to-r bg-clip-text ">My Skills</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
             {skills.map((skill, index) => (
-              <motion.div key={index} variants={fadeIn("up", "spring", index * 0.2 + 0.4, 1)} whileHover={{ y: -5 }} className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-700/50 hover:border-gray-600/50 hover:shadow-blue-500/10 transition-all duration-300">
+              <motion.div key={index} className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-700/50 hover:border-gray-600/50 hover:shadow-blue-500/10 transition-all duration-300" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.2 }} whileHover={{ y: -5 }}>
                 <div className="flex items-center gap-3 mb-6">
                   {skill.icon}
                   <h3 className="text-2xl font-semibold text-white">{skill.title}</h3>
@@ -114,14 +112,14 @@ export default function AboutPage() {
         </motion.section>
 
         {/* Experience Section */}
-        <motion.section variants={fadeIn("up", "spring", 0.8, 1)} className="mb-20">
+        <motion.section className="mb-20" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
           <h2 className="text-4xl font-bold text-center mb-12 flex items-center justify-center gap-3">
             <Briefcase className="text-blue-400" size={32} />
             <span className="bg-clip-text">Experience</span>
           </h2>
           <div className="space-y-8">
             {experiences.map((exp, index) => (
-              <motion.div key={index} variants={fadeIn("up", "spring", index * 0.2 + 0.6, 1)} className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-700/50 hover:border-gray-600/50 hover:shadow-blue-500/10 transition-all duration-300">
+              <motion.div key={index} className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-gray-700/50 hover:border-gray-600/50 hover:shadow-blue-500/10 transition-all duration-300" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.2 }}>
                 <div className="flex items-center gap-3 mb-4">
                   {exp.icon}
                   <h3 className="text-2xl font-semibold text-white">{exp.title}</h3>
@@ -141,14 +139,14 @@ export default function AboutPage() {
         </motion.section>
 
         {/* Tools Section */}
-        <motion.section variants={fadeIn("up", "spring", 1, 1)}>
+        <motion.section initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
           <h2 className="text-4xl font-bold text-center mb-12 flex items-center justify-center gap-3">
             <Wrench className="text-blue-400" size={32} />
             <span className="bg-clip-text">Favorite Tools</span>
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             {tools.map((tool, index) => (
-              <motion.span key={index} variants={fadeIn("up", "spring", index * 0.1 + 0.8, 1)} whileHover={{ scale: 1.05 }} className="bg-gray-800/50 backdrop-blur-xl text-gray-200 px-6 py-3 rounded-2xl text-lg font-medium shadow-lg hover:shadow-blue-500/20 border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300">
+              <motion.span key={index} className="bg-gray-800/50 backdrop-blur-xl text-gray-200 px-6 py-3 rounded-2xl text-lg font-medium shadow-lg hover:shadow-blue-500/20 border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.1 }} whileHover={{ scale: 1.05 }}>
                 {tool}
               </motion.span>
             ))}

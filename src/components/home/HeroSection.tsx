@@ -39,7 +39,7 @@ const HeroSection: React.FC = () => {
           transition={{ duration: 0.8, ease: "easeOut" }} // durasi & easing
         >
           <div className="mb-3 ms-1">
-            <span className="inline-flex items-center gap-2 text-[#f34e3f] text-sm font-medium ">
+            <span className="inline-flex items-center gap-2 text-[#f34e3f] text-base font-medium ">
               Full-stack Developer
               <div className="w-2 h-2 bg-[#f34e3f] rounded-full animate-pulse"></div>
             </span>
@@ -57,7 +57,7 @@ const HeroSection: React.FC = () => {
           <motion.div className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.8 }}>
             <Link href="/portfolio" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-700 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
               {/* Gradient animasi */}
-              <div className="absolute inset-0 bg-gray-700 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+              <div className="absolute inset-0 bg-gray-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
 
               {/* Teks & icon */}
               <span className="relative z-10 flex items-center transition-colors duration-300 group-hover:text-light">
@@ -67,7 +67,7 @@ const HeroSection: React.FC = () => {
             </Link>
             <Link href="/socials" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-700 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
               {/* Gradient animasi */}
-              <div className="absolute inset-0 bg-gray-700 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+              <div className="absolute inset-0 bg-gray-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
 
               {/* Teks & icon */}
               <span className="relative z-10 flex items-center transition-colors duration-300 group-hover:text-light">

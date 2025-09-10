@@ -34,11 +34,11 @@ const AboutSectionHome: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3  text-[#67C090] text-sm font-medium rounded-full mb-4 ">
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3  text-[#f34e3f] text-base font-medium rounded-full mb-4 ">
               <span>About Me</span>
-              <div className="w-2 h-2 bg-[#67C090] rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-[#f34e3f] rounded-full animate-pulse"></div>
             </div>
-            <h2 className="text-2xl sm:text-5xl md:text-6xl font-semibold text-[#67C090] mb-4 sm:mb-6 leading-tight">
+            <h2 className="text-2xl sm:text-5xl md:text-6xl font-semibold text-[#f34e3f] mb-4 sm:mb-6 leading-tight">
               Digital <span className="text-white"> Professional</span>
             </h2>
           </div>
@@ -48,16 +48,16 @@ const AboutSectionHome: React.FC = () => {
             {/* Left */}
             <div className="space-y-6 sm:space-y-8">
               <p className="text-justify text-base sm:text-lg md:text-xl leading-relaxed text-gray-300">
-                As a <span className="font-semibold text-[#67C090]">Full-Stack Developer</span> with over 5 years of experience, I specialize in creating modern applications that push the boundaries of what’s possible.
+                As a <span className="font-semibold text-[#f34e3f]">Full-Stack Developer</span> with over 5 years of experience, I specialize in creating modern applications that push the boundaries of what’s possible.
               </p>
               <p className="text-justify text-base sm:text-lg leading-relaxed text-gray-300">
-                I craft <span className="font-semibold text-[#67C090]">web, mobile, software, and game applications</span> that are not just functional, but extraordinary. Every project is built with <span className="font-semibold text-[#67C090]">responsive design, high performance</span> and an obsessive focus on user experience.
+                I craft <span className="font-semibold text-[#f34e3f]">web, mobile, software, and game applications</span> that are not just functional, but extraordinary. Every project is built with <span className="font-semibold text-[#f34e3f]">responsive design, high performance</span> and an obsessive focus on user experience.
               </p>
 
               {/* Skills */}
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {skills.map((skill, i) => (
-                  <div key={i} className="group p-3 sm:p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
+                  <div key={i} className="group p-3 sm:p-4 rounded-xl bg-[#212529] backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl border border-black border-r-8 border-b-8">
                     <div className={`inline-flex p-2 sm:p-3 rounded-lg bg-gradient-to-r ${skill.color} mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300`}>{skill.icon}</div>
                     <h3 className="font-semibold text-white text-xs sm:text-sm">{skill.label}</h3>
                   </div>
@@ -67,7 +67,7 @@ const AboutSectionHome: React.FC = () => {
 
             {/* Right */}
             <div className="space-y-6 sm:space-y-8">
-              <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/30 backdrop-blur-sm">
+              <div className="p-4 sm:p-6 rounded-2xl bg-[#212529] duration-300 hover:scale-105 hover:shadow-xl border-black border-r-8 border-b-8 ">
                 <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                   <div className="p-2 sm:p-3 rounded-full bg-slate-600">
                     <Award size={20} className="sm:w-6 sm:h-6 text-white" />
@@ -85,31 +85,15 @@ const AboutSectionHome: React.FC = () => {
           {/* CTA */}
           <div className="text-center">
             <div className="inline-flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <div className="relative flex items-center justify-center">
-                <Link href="/portfolio" className="relative group overflow-hidden px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#67C090] text-[#67C090] hover:text-white text-base sm:text-lg font-semibold rounded-lg transition-all duration-300 hover:border-[#67C090] hover:scale-105">
-                  {/* Background animasi */}
-                  <span className="absolute inset-0 bg-[#67C090] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out"></span>
-
-                  {/* Konten button */}
-                  <div className="relative flex items-center justify-center">
-                    <span>More Journey</span>
-                  </div>
-                </Link>
-              </div>
-
-              <Link href="/portfolio" className="relative group overflow-hidden px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#67C090] text-[#67C090] text-base sm:text-lg font-semibold rounded-lg transition-all duration-300 hover:border-[#67C090] hover:scale-105">
-                <div className="flex items-center justify-center">
-                  <span>View Portfolio</span>
-                  <div className="ml-2 sm:ml-3 w-4 sm:w-5 h-4 sm:h-5 rounded-full border-2 border-current group-hover:rotate-180 transition-transform duration-500"></div>
-                </div>
+              <Link href="/about" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-700 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
+                <div className="absolute inset-0 bg-gray-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+                <span className="relative z-10">More Journey</span>
               </Link>
-            </div>
 
-            {/* Trust */}
-            <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 opacity-60 text-xs sm:text-sm">
-              <div className="hidden sm:block w-px h-4 bg-gray-600"></div>
-              <div className="text-gray-400">5+ years of excellence</div>
-              <div className="hidden sm:block w-px h-4 bg-gray-600"></div>
+              <Link href="/portfolio" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-700 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
+                <div className="absolute inset-0 bg-gray-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
+                <span className="relative z-10">View Portfolio</span>
+              </Link>
             </div>
           </div>
         </div>
