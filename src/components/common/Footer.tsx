@@ -77,9 +77,9 @@ const Footer: React.FC = () => {
           {/* Services */}
           <div className="space-y-3">
             <h3 className="text-xl font-semibold text-white relative">Services</h3>
-            <div className="space-y-3">
+            <div className="space-y-3 cursor-text">
               {["Mobile Apps", "UI/UX Design", "Web Development", "Software Development", "Game Development"].map((service) => (
-                <div key={service} className="text-gray-400 hover:text-white transition-colors cursor-default">
+                <div key={service} className="text-gray-400 hover:text-white transition-colors">
                   {service}
                 </div>
               ))}
@@ -108,14 +108,14 @@ const Footer: React.FC = () => {
               {[
                 {
                   icon: <Link2 size={24} />,
-                  href: "https://github.com/sawnedcom",
+                  href: "/socials",
                   color: "hover:shadow-gray-800",
                 },
               ].map((social, index) => (
-                <a key={index} href={social.href} target="_blank" rel="noopener noreferrer" className={`group relative p-3 rounded-xl bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600 text-gray-400 hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl ${social.color}`}>
+                <Link key={index} href={social.href} className={`group relative p-3 rounded-xl bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600 text-gray-400 hover:text-white transition-all duration-500 hover:scale-110 hover:shadow-xl ${social.color}`}>
                   <div className="relative z-10">{social.icon}</div>
                   <div className="absolute inset-0 rounded-xl transition-all duration-500"></div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -127,7 +127,7 @@ const Footer: React.FC = () => {
             </p>
 
             {/* Back to Top Button */}
-            <button onClick={scrollToTop} className="group p-3 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 hover:border-blue-400 text-gray-400 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:scale-110" aria-label="Back to top">
+            <button onClick={scrollToTop} className="group cursor-pointer p-3 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 hover:border-blue-400 text-gray-400 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 hover:scale-110" aria-label="Back to top">
               <ArrowUp size={18} className="group-hover:-translate-y-1 transition-transform duration-300" />
             </button>
           </div>

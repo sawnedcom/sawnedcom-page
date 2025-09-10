@@ -81,7 +81,7 @@ const Header: React.FC = () => {
             <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
               <Image src="/images/logo.jpg" alt="Sawnedcom Logo" fill className="object-cover" sizes="40px" priority />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">sawnedcom</span>
+            <span className="text-lg sm:text-xl font-semibold text-[#f34e3f] transition-colors duration-300">sawnedcom</span>
           </Link>
 
           {/* Desktop Navigation */}
