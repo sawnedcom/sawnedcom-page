@@ -57,3 +57,13 @@ body {
   background-color: var(--putih) !important;
   color: var(--putih) !important;
 }
+
+/* globals.css */
+.stroke-bottom-right {
+  text-shadow: 4px 0px #000, 0px 4px #000, 4px 4px #000;
+}
+
+.brody {
+  border-right: 10px solid black;
+  border-bottom: 10px solid black;
+}

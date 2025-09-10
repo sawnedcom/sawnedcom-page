@@ -34,12 +34,13 @@ const AboutSectionHome: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3  text-[#f34e3f] text-base font-medium rounded-full mb-4 ">
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 text-[#f34e3f] text-base font-medium rounded-full mb-4">
               <span>About Me</span>
               <div className="w-2 h-2 bg-[#f34e3f] rounded-full animate-pulse"></div>
             </div>
-            <h2 className="text-2xl sm:text-5xl md:text-6xl font-semibold text-[#f34e3f] mb-4 sm:mb-6 leading-tight">
-              Digital <span className="text-white"> Professional</span>
+
+            <h2 className="-mt-2 text-2xl sm:text-5xl md:text-6xl font-semibold mb-4 sm:mb-6 leading-tight">
+              <span className="text-[#f34e3f] stroke-bottom-right">Digital</span> <span className="text-white">Professional</span>
             </h2>
           </div>
 

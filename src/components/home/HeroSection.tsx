@@ -46,7 +46,10 @@ const HeroSection: React.FC = () => {
           </div>
 
           <motion.h1 className="text-4xl md:text-6xl sm:text-4xl lg:text-6xl font-semibold leading-tight mb-6" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
-            <span className="bg-clip-text text-[#f34e3f]">Sawnedcom</span> <br />
+            <span className="bg-gradient-to-r from-[#f34e3f] to-orange-500 bg-clip-text text-transparent inline-block" style={{ filter: "drop-shadow(4px 4px 0 black)" }}>
+              Sawnedcom
+            </span>
+            <br />
             <span className="text-3xl md:text-6xl lg:text-6xl sm:text-4xl font-semibold">Digital Solutions</span>
           </motion.h1>
 
@@ -80,7 +83,7 @@ const HeroSection: React.FC = () => {
         {/* Hero Image */}
         <div className="relative flex-shrink-0 w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
           <div className="absolute -inset-4 rounded-full bg-gradient-to-r animate-spin-slow opacity-20 z-0"></div>
-          <div className="relative bg-slate-700/10 rounded-4xl shadow-2xl overflow-hidden z-10">
+          <div className="relative bg-slate-700/10 rounded-4xl shadow-2xl overflow-hidden hover:scale-105 duration-300 z-10 brody">
             <Image src="/images/logo-3d.png" alt="Hero Image" width={384} height={384} className="rounded-full object-cover" priority />
           </div>
         </div>
