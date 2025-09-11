@@ -34,7 +34,7 @@ const AboutSectionHome: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 text-[#f34e3f] text-base font-medium rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 text-[#f34e3f] lg:text-base text-sm font-medium rounded-full mb-4">
               <span>About Me</span>
               <div className="w-2 h-2 bg-[#f34e3f] rounded-full animate-pulse"></div>
             </div>
@@ -86,12 +86,12 @@ const AboutSectionHome: React.FC = () => {
           {/* CTA */}
           <div className="text-center">
             <div className="inline-flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link href="/about" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-700 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
+              <Link href="/about" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-black border-r-8 border-b-8 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
                 <div className="absolute inset-0 bg-gray-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
                 <span className="relative z-10">More Journey</span>
               </Link>
 
-              <Link href="/portfolio" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-700 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
+              <Link href="/portfolio" className="relative group inline-flex items-center justify-center px-6 py-3 border-2 border-black border-r-8 border-b-8 text-white text-lg font-normal rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-sm">
                 <div className="absolute inset-0 bg-gray-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
                 <span className="relative z-10">View Portfolio</span>
               </Link>

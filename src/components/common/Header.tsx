@@ -81,26 +81,25 @@ const Header: React.FC = () => {
             <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ring-2 ring-white/20 group-hover:ring-white/40 transition-all duration-300">
               <Image src="/images/logo.jpg" alt="Sawnedcom Logo" fill className="object-cover" sizes="40px" priority />
             </div>
-            <span className="text-lg sm:text-xl font-semibold text-[#f34e3f] transition-colors duration-300">sawnedcom</span>
+            <span className="text-lg sm:text-xl font-semibold text-[#f34e3f] transition-colors duration-300 [text-shadow:1px_1px_0_#000,2px_2px_0_#000]">sawnedcom</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center space-x-1 flex-1 justify-center max-w-4xl">
             {navLinks.map((link) => (
-              <Link key={link.name} href={link.href} className="relative px-6 py-3 text-white font-medium capitalize text-base group overflow-hidden transition-all duration-300 hover:text-white/90">
-                <span className="relative z-10">{link.name}</span>
-                <div className="absolute inset-0 border-b-2 border-white scale-x-0 group-hover:scale-x-100 transform origin-left transition-transform duration-300 ease-out"></div>
-                <div className="absolute inset-0 bg-white/5 scale-x-0 group-hover:scale-x-100 transform origin-left transition-transform duration-300 ease-out rounded"></div>
+              <Link key={link.name} href={link.href} className="hover:scale-105  relative px-6 py-3 text-white font-medium capitalize text-base group overflow-hidden transition-all duration-75">
+                <span className="relative z-10 [text-shadow:2px_2px_0_#000,3px_3px_0_#000,4px_4px_0_#000]">{link.name}</span>
               </Link>
             ))}
 
             {/* Admin Dropdown */}
             {isAdmin && (
               <div className="relative group">
-                <button className="relative px-6 py-3 text-white font-medium text-base overflow-hidden transition-all duration-300 hover:text-white/90">
-                  <span className="relative z-10">Admin</span>
-                  <div className="absolute inset-0 border-b-2 border-white scale-x-0 group-hover:scale-x-100 transform origin-left transition-transform duration-300 ease-out"></div>
-                  <div className="absolute inset-0 bg-white/5 scale-x-0 group-hover:scale-x-100 transform origin-left transition-transform duration-300 ease-out rounded"></div>
+                <button className="relative px-6 py-3 text-white font-medium text-base overflow-hidden transition-all duration-300 hover:scale-105">
+                  <span
+                    className="relative z-10 [text-shadow:2px_2px_0_#000,3px_3px_0_#000,4px_4px_0_#000]">
+                    Admin
+                  </span>
                 </button>
 
                 <div className="absolute left-0 mt-2 w-64 bg-slate-700/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
